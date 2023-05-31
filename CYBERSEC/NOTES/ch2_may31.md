@@ -1,0 +1,169 @@
+# CYBERSEC Chapter 2: Encryption #
+
+## Symmetric Encryption ##
+__Symmetric:__
+- uses 1 key given to 2 people 
+- the easy/universal technique for confidential stored data
+    - also referred to as conventional/single-key encryption
+- Requirements 
+    1. Need a strong encryption algorithm 
+    2. Sender/Receiver must have the same secure key
+
+### Attacking Symmetric Encryption ###
+__Cryptanalytic Attacks__
+- Exploits algo to deduce some-sort of plain-key 
+    - If successful, everything encrypted with that key is compromised
+- Relies on:
+    - Nature of the Algorithm Used 
+    - Some knowledge of plaintext characteristics 
+    - Some samples of text-cipher pairs 
+
+__Brute-Force Attacks__
+- Try all possible keys until something intelligible is obtained
+    - On average, half of all possible keys must be tried to achieve this
+
+### Data Encryption Services (DES) ###
+__DES:__
+- used to be the most widely used encryption scheme
+    - FIPS PUB 46 
+        - Referred to as the Data Encryption Algorithm (DEA) 
+    - method:
+        - 64bit plaintext block + 56 bit key 
+        - = 64bit ciphertext block 
+- Concerns: 
+    - Algorithm Knowledge (studied heavily)
+    - 56bit key size
+        - commercial processors makes this key inadequate
+
+__Triple DES (3DES):__
+- repeating DES using two or three unique keys 
+- Pros:
+    - 168bit key length overcomes most/all brute-force concerns
+    - Underlying encryption algorithm is the same as in DES
+- Cons:
+    - Algorithm is Sluggish
+    - Uses a 64bit block size
+
+__Advanced Encryption Standard (AES):__
+- Feasible replacement for 3DES
+- FIPS 197
+- Properties:
+    - More security strength than 3DES
+    - More efficient than DES 
+    - Symmetric block cipher still
+    - 128bit data and 128/192/256-bit keys
+
+__DES Security Issues:__
+- Usually data-blocks need to be more than 64/128-bit blocks
+- Electronic Codeblock (ECB):
+    - each block of plaintext is encrypted w/ the same key 
+        - regularities may be exploitable 
+- Modes of Operation:
+    - Alt. techniques developed that:
+        - increase symmetric large-block security
+        - overcome ECB weaknesses
+
+### Block and Stream Ciphers ###
+__Block Cipher:__
+- processes input one block at a time 
+- outputs one block for each block 
+- can reuse keys 
+- common
+
+__Stream Cipher:__
+- processes input elements continuously (1 at a time)
+- usually faster 
+- encrypts one byte at a time 
+- pseudorandom stream that is nearly unpredictable
+
+### Message Authentification ###
+- verify that a message is authentic: 
+    - contents are not altered
+    - sent from the correct source at the right time 
+- can use conventional encryption (symmetrical)
+- can be done separately from encryption
+    - often involve hash functions to assert validity
+
+__Hash Function Properties:__
+- SHA is most common 
+- For message authentification:
+    - can be applied to a block of any size
+    - produces a fixed-length output
+    - H(x) is relatively easy to computer for any given x
+    - One-way (Non-Invertible)
+    - Computationally Unique
+    - Collision-Resistant
+        - y != x, then H(y) != H(x)
+- Vulnerabilities:
+    - Cryptanalysis 
+        - depends on hash algo. security
+    - Brute-Force Attack
+        - depends on hash code length
+- Additional Features: 
+    - Hash Passwords (locally store a hash-password)
+    - Intrusion Detection (locally store hash files)
+
+
+## Asymmetric Encryption ## 
+- Publicly Proposed by Diffie and Hellman in 1976
+- Based on Mathematical Functions 
+
+__Asymmetric:__
+- uses 2 keys given to 2 people 
+- public key and private key 
+    - public key is made public for others to use
+    - private key lets you see text from the public key 
+    - people send messages based on the receiver's public & private keys
+
+### Public-Key Cryptosystems Requirements ###
+- computationally easy to create pairs 
+- computationally easy for sender knowing public keys to Encrypt
+- computationally easy for reciever knowing private key to Decrypt
+- computationally infeasible for opponent to discern private from public keys
+- computationally infeasible for opponent to recover original message
+- useful if either key can be used for each role 
+
+### Asymmetric Encryption Algorithms ### 
+__RSA:__
+- developed in 1977 (Rivest, Shamir, Adleman)
+- most widely accepted/implemented approach to public-key encryption
+- block cipher in which: 
+    - plaintext & ciphertext are integers between 0 and n-1, for some n 
+
+__Diffie-Hellman:__
+- enables two users to securely reach agreement about a shared secret
+- limited to the exchange of literal keys 
+
+__Digital Signature Standard (DSS):__ 
+- provides only a digital signature function w/ SHA-1 
+- cannot be used for encryption or key exchange 
+
+__Elliptic Curve Cryptography (ECC):__
+- like RSA, but with much smaller keys 
+
+### Digital Signatures ###
+- Data-Dependent bit pattern generated by an agent as some sort of data block
+- NIST FIPS PUB 186-4 defined how to do this: 
+    1. Digital Signature Algorithm (DSA)
+    2. RSA Digital Signature Algorithm 
+    3. Elliptic Curve Digital Signature Algorithm (ECDSA)
+
+## Random Numbers ##
+__Random:__
+- Uses: 
+    - generating basically all kinds of keys ever
+    - handshaking to prevent replay attacks 
+- Requirements:
+    - Uniform Distribution
+    - Independence
+    - Unpredictability
+
+__Pseudorandom:__
+- like Random, but more predictable
+- you can't use deterministic algo.s to generate true-random numbers
+- predicatble and statistically normalized, on some level
+
+__TRNG (True RNG:)__
+- uses nondeterministic source to produce randomness 
+    - often involve measuring unpredictable natural processes
+- increasingly provided on modern processors

@@ -7,7 +7,7 @@ __Confidentiality:__
 __Integrity:__
 - Guarding against malicious modification/misuse/destruction
 
-__Avaibility:__
+__Availability:__
 - Ensuring that access/use of info is timely and reliable
 
 ## Levels of Impact ##
@@ -59,7 +59,7 @@ __Vulnerability:__
 - Weakness in a system that is vulnerable to a threat of some kind 
 
 ## Computer System Assets ##
-- Hardware, Software, Data, Networks/Comm. Facilites
+- Hardware, Software, Data, Networks/Comm. Facilities
 
 ## Vulnerabilities, Threats, Attacks ##
 __Vulnerabilities:__
@@ -69,7 +69,7 @@ __Vulnerabilities:__
     - Unavailable or Slow (loss off Availability)
 
 __Threats:__
-- Capable of Exploiting Vulnerabiltiies
+- Capable of Exploiting Vulnerabilities
 - Represent potential security harm to an Asset
 
 __Attacks:__
@@ -133,17 +133,17 @@ __For more info, check Discord__
     - System and Information Integrity
 
 ## Attack Surfaces ##
-- Consist of reachable and exploitable Vulnerabilites in a system 
+- Consist of reachable and exploitable Vulnerabilities in a system 
     - (ex: UI forms, Inside-Firewall Services, etc...)
 - Categories: 
     - __Network Attack Surface__
-        - Vulnerbiilities over some network 
+        - Vulnerabilities over some network 
             - (ex: net-protocol vulnerabilities, denial of service attacks, etc...)
     - __Software Attack Surface__
         - Vulnerabilities in application utility or OS code
-        - Particular focus is Web Servcer Software
+        - Particular focus is Web Server Software
     - __Human Attack Surface__
-        - Vulnerabilities created by personell/trusted insiders
+        - Vulnerabilities created by personnel/trusted insiders
 
 ## Computer Security Strategy ##
 __For more info, check Discord__
