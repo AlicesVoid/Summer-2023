@@ -9,52 +9,52 @@
 - OS controls the execution of programs to ensure integrity  
 
 ### Process vs Program  
-- __Process__: a unit of work on the system (active)
-- __Program__: a set of instructions for a process (passive)
+- **Process**: a unit of work on the system (active)
+- **Program**: a set of instructions for a process (passive)
 
 ### Process Management
-__To-Do:__
+**To-Do:**
 - OS systems must mediate the process & system tools:
-    - __Allocate__ resources when program starts
-    - __Manage__ resources while program runs 
-    - __Reclaim__ resources when process terminates
-- __Multiplex__ resources among multiple processes
+    - **Allocate** resources when program starts
+    - **Manage** resources while program runs 
+    - **Reclaim** resources when process terminates
+- **Multiplex** resources among multiple processes
 - Provides the means for: 
     - Suspending/Resuming a process
     - Process Synchronization
     - Inter-Process Communications
 
-__Accessing Hardware:__
+**Accessing Hardware:**
 - OS mediates processes and system resources
-    - Processes are __Restricted__ from Direct Hardware Access
+    - Processes are **Restricted** from Direct Hardware Access
         - Processes must request OS to perform access
 
-__Request Services:__
-- OS exposes a set of __System Calls:__
+**Request Services:**
+- OS exposes a set of **System Calls:**
     - Processes can Request Services from the OS such as: 
         - Read File from the Disk
         - Send Data over the Network
         - Send Message to Another Process
 - Stored in some table (ex: linus -> system call table)
 
-__Dual Mode Operation:__
-- __User Mode:__
+**Dual Mode Operation:**
+- **User Mode:**
     - Process Execution 
     - Allows Process to execute only Unprivileged Instructions
         - CPU Restricts other processes
-- __System Mode:__
+- **System Mode:**
     - OS Execution
     - CPU Allows execution of Privileged Instructions
-- __Method:__
-    - uses a __Mode Bit__ to determine system mode: 
+- **Method:**
+    - uses a **Mode Bit** to determine system mode: 
         - `Set to 0 = System Mode` 
         - `Set to 1 = User Mode` 
     - allows for CPU to quickly verify for Privileged Instructions
-- __Benefits:__
+- **Benefits:**
     - Protects OS from Errant Programs/Users
     - Protects Errant Users/Programs from eachother 
   
-__Example 1: Typical Process Execution Case__  
+**Example 1: Typical Process Execution Case**  
 1. Process executes Unprivileges Instructions and Reads File
 2. Process invokes a `System Call`:
     - system switches from `User Mode` to `System Mode` 
@@ -64,19 +64,19 @@ __Example 1: Typical Process Execution Case__
     - system switches from `System Mode` to `User Mode` 
 
 ### Memory Management 
-__Main Memory:__
+**Main Memory:**
 - a Large Array of Bytes, where each Byte has its own address
 - ONLY large storage DIRECTLY accessible by the CPU 
 - usually stores sveral programs at once
 
-__Memory Management:__
+**Memory Management:**
 - keeps track of what is doing what in the memory
 - decides which processes to move in/out from memory
 - Allocates/Deallocates Memory as needed
 
 ### Storage Management
-__Files:__
-- For convenience, we sort info into __Files:__ 
+**Files:**
+- For convenience, we sort info into **Files:** 
     - collections of related information defined by its creator
 - OS System File Management Services: 
     - Create/Delete Files 
@@ -84,7 +84,7 @@ __Files:__
     - Mapping Files to Memory on the Storage Device 
     - File Backup
 
-__Heirarchy:__
+**Heirarchy:**
 - Main Order: 
     1. Hardware Registers
     2. Cache Memory (CPU/motherboard/etc...)
@@ -96,27 +96,27 @@ __Heirarchy:__
     - Must ensure Data Consistency along all heirarchy levels
 
 ### I/O Management
-__Purpose:__
+**Purpose:**
 - Hide peculiarities of Specific Devices from the User 
 
-__Example: Unix I/O Subsystem__
+**Example: Unix I/O Subsystem**
 - Provides: 
     - Functionality to Manage Data Buffering, Caching, and Spooling
     - A general device Driver Interface
     - Drivers for the Specific Hardware Devices
 
 ### Protection and Security
-__Protection:__
+**Protection:**
 - Internal to the OS
 - Controls the Access of Users/Processes to the System Resources
 - (ex: processes overwriting eachother, etc...)
 
-__Security:__
+**Security:**
 - External to the OS 
 - (ex: malware, viruses, worms, trojans, etc...)
 
 ### Computer Environments 
-__Distributed Systems:__ 
+**Distributed Systems:** 
 - a collection of physically separate, networked systems that share resources
 - Advantages:
     - Increases computation speed, functionality, data availability, and reliability
@@ -126,7 +126,7 @@ __Distributed Systems:__
     - Wide-Area Network (WAN): 
         - Connects buildings, cities, or countries
 
-__Mobile Computing:__
+**Mobile Computing:**
 - Computing on Handheld Smartphones and Tablet Devices
 - Sacrifices Computer Size & Capacity in favor of Portability 
 - Allows for Portability-Focused Apps: 
@@ -136,44 +136,44 @@ __Mobile Computing:__
     - Android: Not-Apple Devices (good)
 
 ### Computer System Types 
-__Embedded Systems:__
+**Embedded Systems:**
 - systems dedicated to Specific Tasks 
     - usually little to no UI
     - one of the most prevalent types of computers
     - (ex: car-engine control, robotic arms, etc...)
 
-__Real-Time Systems:__
+**Real-Time Systems:**
 - systems dedicated to Time-Constraint Tasks 
     - usually are paired with Embedded Systems
     - used for specific real-world tasks that require timing 
     - (ex: self-driving cars, assembly robots, etc...) 
 
-__Multimedia Systems:__
+**Multimedia Systems:**
 - systems made to Deliver Multimedia Content 
 - usually have flexible User Interfaces for several purposes
 - some media must be delievered within time constraintes (real-time)
 - (ex: text, video, etc...)
 
 ### Computing Models
-__Virtual Machines:__
+**Virtual Machines:**
 - Software that can run it's own OS and Apps (mimics a physical system)
 - treated as Application Programs by the OS, but 
     - usually more flexible 
     - may have more permissions than standard application programs
 
-__Cloud Computing:__
+**Cloud Computing:**
 - delivery of services over a network 
 - reduce operating costs
 - imrpove resource utilization 
 - make it easier to tackle large-scale computing
 - types of services: 
-    - __Infrastructure-as-a-Service (IaaS):__
-    - __Platform-as-a-Service (PaaS):__
-    - __Software-as-a-Service (SaaS):__
+    - **Infrastructure-as-a-Service (IaaS):**
+    - **Platform-as-a-Service (PaaS):**
+    - **Software-as-a-Service (SaaS):**
 - types of clouds: 
-    - __Public:__
-    - __Private:__
-    - __Hybrid:__
+    - **Public:**
+    - **Private:**
+    - **Hybrid:**
 
 ## ETC Lecture Notes: ##  
  
