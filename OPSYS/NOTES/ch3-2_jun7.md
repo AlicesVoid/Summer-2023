@@ -71,6 +71,7 @@
     - init process becomes the New Parent of the orphaned child
     - init periodically calls `wait()` to collect the return statuses of Orphans
 
+------------------------
 ## INTERPROCESS COMMUNICATIONS (IPC) 
 **Process Categories:**
 - **Independent:**
@@ -238,6 +239,7 @@
     - the server Accepts the client's connection
     - the server sets up a Pair of Sockets used for comms
 
+------------------------
 ## UNIX SYSTEM V (FIVE) IPC
 
 ### IPC Examples: System V Shared Memory 

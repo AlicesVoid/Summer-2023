@@ -175,6 +175,7 @@
     - **Private:**
     - **Hybrid:**
 
+------------------------
 ## ETC Lecture Notes: ##  
  
 ### CPU

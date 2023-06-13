@@ -75,6 +75,7 @@
     - struct **files_struct *files** (list of open files)
     - etc... 
 
+------------------------
 ## Process Scheduling:
 
 ### Process Scheduling: The Queuing Mechanism 
@@ -140,6 +141,7 @@
     4. Let the **Selected Process** resume execution
 - context switch time is **Pure Overhead** (constant expense)
 
+------------------------
 ## Operations On Processes
 
 ### Operations on Processes: Process Trees
