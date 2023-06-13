@@ -68,8 +68,14 @@
     - as the # of threads grows, so does architectural support for threading
         - CPUs have Cores as well as Hardware Threads
             - (ex: Oracle SPARC T4 has 8 cores, 8 hardware threads per core)
-            
-### CONTINUE ON PAGE 11 MORE MULTITHREADING
+
+### Multithreading
+- All Threads Share: 
+    - data section, code section, and opened files
+- Each Thread Has it's own:
+    - Program Counter, Registers, and Stack
+
+### CONTINUE ON PAGE 12 MORE MULTITHREADING
 
 ------------------------
 ## Multithreading Models:
