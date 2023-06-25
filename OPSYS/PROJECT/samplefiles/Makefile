@@ -7,10 +7,10 @@ recv:	recv.o
 	g++ recv.o -o recv
 
 sender.o:	 sender.cpp
-	g++ -c sender.cpp
+	g++ -c -g sender.cpp
 
 recv.o:	recv.cpp
-	g++ -c recv.cpp
+	g++ -c -g recv.cpp
 
 
 clean:
