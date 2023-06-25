@@ -32,14 +32,14 @@ string recvFileName()
         
 	/* TODO: declare an instance of the fileNameMsg struct to be
 	 * used for holding the message received from the sender.
-         */
-		fileNameMsg nameMsg; 
+	*/
+	fileNameMsg nameMsg; 
 
-        /* TODO: Receive the file name using msgrcv() */
-		fileName = msgrcv(msqid, &nameMsg, sizeof(fileNameMsg) - sizeof(long), FILE_NAME_TRANSFER_TYPE, 0);
+	/* TODO: Receive the file name using msgrcv() */
+	fileName = msgrcv(msqid, &nameMsg, sizeof(fileNameMsg) - sizeof(long), FILE_NAME_TRANSFER_TYPE, 0);
 
 	/* TODO: return the received file name */
-        return fileName;
+	return fileName;
 }
  /**
  * Sets up the shared memory segment and message queue
@@ -61,7 +61,7 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 	   on the system has a unique id, but different objects may have the same key.
 	*/
 
-		key_t key = ftok("keyfile.txt", 'a');
+		key_t key = ftok("/keyfile.txt", 'a');
 
 		/* TODO: Allocate a shared memory segment. The size of the segment must be SHARED_MEMORY_CHUNK_SIZE. */
 		shmid = shmget(key, SHARED_MEMORY_CHUNK_SIZE, S_IRUSR | S_IWUSR | IPC_CREAT);
@@ -101,10 +101,11 @@ unsigned long mainLoop(const char* fileName)
 	int numBytesRecv = 0;
 	
 	/* The string representing the file name received from the sender */
+	printf("Received File Name: %s \n", fileName);
 	string recvFileNameStr = fileName;
 	
 	/* TODO: append __recv to the end of file name */
-	recvFileNameStr += "__recv";
+	recvFileNameStr += "__recv.txt";
 
 	/* Open the file for writing */
 	FILE* fp = fopen(recvFileNameStr.c_str(), "w");
@@ -136,26 +137,34 @@ unsigned long mainLoop(const char* fileName)
 		 */
 		message rcvMsg;
 		msgrcv(msqid, &rcvMsg, sizeof(message) - sizeof(long), SENDER_DATA_TYPE, 0);
+		msgSize = rcvMsg.size;
 
-		
 		/* If the sender is not telling us that we are done, then get to work */
 		if(msgSize != 0)
 		{
 			/* TODO: count the number of bytes received */
-			numBytesRecv += rcvMsg.size;
+			numBytesRecv += msgSize;
 
-			/* Save the shared memory to file */
+			/* Save the shared memory to file */ 
 			if(fwrite(sharedMemPtr, sizeof(char), msgSize, fp) < 0)
 			{
 				perror("fwrite");
+				exit(-1);
 			}
-			
+
+			printf("Bytes Received: %d \n", numBytesRecv);
+
 			/* TODO: Tell the sender that we are ready for the next set of bytes. 
  			 * I.e., send a message of type RECV_DONE_TYPE. That is, a message
 			 * of type ackMessage with mtype field set to RECV_DONE_TYPE. 
  			 */
 			ackMessage ackMsg;
 			ackMsg.mtype = RECV_DONE_TYPE;
+			if (msgsnd(msqid, &ackMsg, sizeof(ackMessage) - sizeof(long), 0) == -1)
+			{
+				perror("msgsnd");
+				exit(-1);
+			}
 		}
 		/* We are done */
 		else
@@ -179,13 +188,23 @@ unsigned long mainLoop(const char* fileName)
 void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 {
 	/* TODO: Detach from shared memory */
-	shmdt(sharedMemPtr);
+	if(shmdt(sharedMemPtr) == -1)
+	{
+		perror("shmdt");
+	}
+
 
 	/* TODO: Deallocate the shared memory segment */
-	shmctl(shmid, IPC_RMID, NULL);
+	if(shmctl(shmid, IPC_RMID, NULL) == -1)
+	{
+		perror("shmctl");
+	}
 	
 	/* TODO: Deallocate the message queue */
-	msgctl(msqid, IPC_RMID, NULL);
+	if(msgctl(msqid, IPC_RMID, NULL) == -1)
+	{
+		perror("msgctl");
+	}
 
 }
 
@@ -195,13 +214,16 @@ void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
  */
 void ctrlCSignal(int signal)
 {
-	/* Free system V resources */
-	cleanUp(shmid, msqid, sharedMemPtr);
+	/* Free system V resources: */
+	if (shmdt(nullptr) == -1)
+	{
+		perror("shmdt");
+	}
 }
 
 int main(int argc, char** argv)
 {
-	printf("starting recv");
+	printf("starting recv\n");
 	/* TODO: Install a signal handler (see signaldemo.cpp sample file).
 	* If user presses Ctrl-c, your program should delete the message
 	* queue and the shared memory segment before exiting. You may add 
@@ -210,14 +232,13 @@ int main(int argc, char** argv)
 	signal(SIGINT, ctrlCSignal);
 				
 	/* Initialize */
-	printf("recv: init");
 	init(shmid, msqid, sharedMemPtr);
-	printf("initialized recv");
-	
+	printf("initialized recv\n");
+
 	/* Receive the file name from the sender */
 	string fileName = recvFileName();
-	printf("received file name");
-	
+	printf("received file name\n");
+
 	/* Go to the main loop */
 	fprintf(stderr, "The number of bytes received is: %lu\n", mainLoop(fileName.c_str()));
 
@@ -225,7 +246,7 @@ int main(int argc, char** argv)
 	 * and message queue (i.e. call cleanup) 
 	 */
 	cleanUp(shmid, msqid, sharedMemPtr);
-	printf("cleaned up recv");
-		
+	printf("cleaned up recv\n");
+
 	return 0;
 }

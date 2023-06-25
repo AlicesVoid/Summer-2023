@@ -34,8 +34,7 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 	   like the file name and the id is like the file object.  Every System V object
 	   on the system has a unique id, but different objects may have the same key.
 	*/
-	printf("sender: init");
-	key_t key = ftok("keyfile.txt", 'a');
+	key_t key = ftok("/keyfile.txt", 'a');
 
 	/* TODO: Get the id of the shared memory segment. The size of the segment must be SHARED_MEMORY_CHUNK_SIZE */
 	shmid = shmget(key, SHARED_MEMORY_CHUNK_SIZE, S_IRUSR | S_IWUSR);
@@ -70,7 +69,10 @@ void init(int& shmid, int& msqid, void*& sharedMemPtr)
 void cleanUp(const int &shmid, const int &msqid, void *sharedMemPtr)
 {
 	/* TODO: Detach from shared memory */
-	shmdt(sharedMemPtr);
+	if (shmdt(sharedMemPtr) == -1)
+	{
+		perror("shmdt");
+	}
 }
 
 /**
@@ -91,6 +93,7 @@ unsigned long sendFile(const char *fileName)
 	unsigned long numBytesSent = 0;
 
 	/* Open the file */
+	printf("Sent File Name: %s \n", fileName);
 	FILE *fp = fopen(fileName, "r");
 
 	/* Was the file open? */
@@ -104,10 +107,10 @@ unsigned long sendFile(const char *fileName)
 	while (!feof(fp))
 	{
 		/* Read at most SHARED_MEMORY_CHUNK_SIZE from the file and
-			* store them in shared memory.  fread() will return how many bytes it has
-			* actually read. This is important; the last chunk read may be less than
-			* SHARED_MEMORY_CHUNK_SIZE.
-			*/
+		* store them in shared memory.  fread() will return how many bytes it has
+		* actually read. This is important; the last chunk read may be less than
+		* SHARED_MEMORY_CHUNK_SIZE.
+		*/
 		if ((sndMsg.size = fread(sharedMemPtr, sizeof(char), SHARED_MEMORY_CHUNK_SIZE, fp)) < 0)
 		{
 			perror("fread");
@@ -116,43 +119,52 @@ unsigned long sendFile(const char *fileName)
 
 		/* TODO: count the number of bytes sent. */
 		numBytesSent += sndMsg.size;
+		
 
 		/* TODO: Send a message to the receiver telling him that the data is ready
-			* to be read (message of type SENDER_DATA_TYPE).
-			*/
-			if (msgsnd(msqid, &sndMsg, sizeof(message) - sizeof(long), 0) == -1)
+		* to be read (message of type SENDER_DATA_TYPE). 
+		*/
+		sndMsg.mtype = SENDER_DATA_TYPE;
+		if (msgsnd(msqid, &sndMsg, sizeof(message) - sizeof(long), 0) == -1)
+		{
+			perror("msgsnd");
+			exit(-1);
+		}
+
+		printf("Bytes Sent: %d \n", numBytesSent);
+
+		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
+		* that he finished saving a chunk of memory.
+		*/
+		while (true)
+		{
+			// Receive the message
+			if (msgrcv(msqid, &rcvMsg, sizeof(ackMessage) - sizeof(long), RECV_DONE_TYPE, 0) == -1)
 			{
-				perror("msgsnd");
+				perror("msgrcv");
 				exit(-1);
 			}
 
-		/* TODO: Wait until the receiver sends us a message of type RECV_DONE_TYPE telling us
-			* that he finished saving a chunk of memory.
-			*/
-			while (true)
+			// Check the received message's type
+			if (rcvMsg.mtype == RECV_DONE_TYPE)
 			{
-				message rcvMsg;
-				// Receive the message
-				if (msgrcv(msqid, &rcvMsg, sizeof(message) - sizeof(long), RECV_DONE_TYPE, 0) == -1)
-				{
-					perror("msgrcv");
-					exit(-1);
-				}
-
-				// Check the received message's type
-				if (rcvMsg.mtype == RECV_DONE_TYPE)
-				{
-					break; // Exit the loop when the expected message is received
-				}
+				break; // Exit the loop when the expected message is received
 			}
+		}
 	}
 
 	/** TODO: once we are out of the above loop, we have finished sending the file.
 	 * Lets tell the receiver that we have nothing more to send. We will do this by
 	 * sending a message of type SENDER_DATA_TYPE with size field set to 0.
 	 */
-	ackMessage ackMsg;
-	ackMsg.mtype = SENDER_DATA_TYPE;
+	message endMsg;
+	endMsg.mtype = SENDER_DATA_TYPE;
+	endMsg.size = 0;
+	if (msgsnd(msqid, &endMsg, sizeof(message) - sizeof(long), 0) == -1)
+	{
+		perror("endmsg");
+		exit(-1);
+	}
 
 	/* Close the file */
 	fclose(fp);
@@ -196,7 +208,7 @@ void sendFileName(const char *fileName)
 
 int main(int argc, char **argv)
 {	
-	printf("starting sender");
+	printf("starting sender\n");
 	/* Check the command line arguments */
 	if (argc < 2)
 	{
@@ -205,20 +217,20 @@ int main(int argc, char **argv)
 	}
 
 	/* Connect to shared memory and the message queue */
-	printf("sender: init");
+	printf("sender: init\n");
 	init(shmid, msqid, sharedMemPtr);
-	printf("initialized sender");
+	printf("initialized sender\n");
 
 	/* Send the name of the file */
 	sendFileName(argv[1]);
-	printf("sent file name");
-	
-/* Send the file */
-fprintf(stderr, "The number of bytes sent is %lu\n", sendFile(argv[1]));
+	printf("sent file name\n");
 
-/* Cleanup */
-cleanUp(shmid, msqid, sharedMemPtr);
-printf("cleaned up sender");
-	
-return 0;
+	/* Send the file */
+	fprintf(stderr, "The number of bytes sent is %lu\n", sendFile(argv[1]));
+
+	/* Cleanup */
+	cleanUp(shmid, msqid, sharedMemPtr);
+	printf("cleaned up sender\n");
+
+	return 0;
 }
