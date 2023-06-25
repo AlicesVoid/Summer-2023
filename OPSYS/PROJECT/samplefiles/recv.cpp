@@ -36,7 +36,8 @@ string recvFileName()
 	fileNameMsg nameMsg; 
 
 	/* TODO: Receive the file name using msgrcv() */
-	fileName = msgrcv(msqid, &nameMsg, sizeof(fileNameMsg) - sizeof(long), FILE_NAME_TRANSFER_TYPE, 0);
+	msgrcv(msqid, &nameMsg, sizeof(fileNameMsg) - sizeof(long), FILE_NAME_TRANSFER_TYPE, 0);
+	fileName = nameMsg.fileName;
 
 	/* TODO: return the received file name */
 	return fileName;
@@ -215,10 +216,9 @@ void cleanUp(const int& shmid, const int& msqid, void* sharedMemPtr)
 void ctrlCSignal(int signal)
 {
 	/* Free system V resources: */
-	if (shmdt(nullptr) == -1)
-	{
-		perror("shmdt");
-	}
+	cleanUp(shmid, msqid, sharedMemPtr);
+	printf("\n");  //just to make it look nice :D 
+	exit(0);
 }
 
 int main(int argc, char** argv)
@@ -237,7 +237,6 @@ int main(int argc, char** argv)
 
 	/* Receive the file name from the sender */
 	string fileName = recvFileName();
-	printf("received file name\n");
 
 	/* Go to the main loop */
 	fprintf(stderr, "The number of bytes received is: %lu\n", mainLoop(fileName.c_str()));

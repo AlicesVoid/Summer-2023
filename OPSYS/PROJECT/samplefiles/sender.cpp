@@ -223,7 +223,6 @@ int main(int argc, char **argv)
 
 	/* Send the name of the file */
 	sendFileName(argv[1]);
-	printf("sent file name\n");
 
 	/* Send the file */
 	fprintf(stderr, "The number of bytes sent is %lu\n", sendFile(argv[1]));
